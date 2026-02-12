@@ -1,12 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import type { ChatMessage } from "../types";
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, User, ArrowUpRight } from "lucide-react";
 
 interface ChatPanelProps {
   messages: ChatMessage[];
   isLoading: boolean;
   onSendMessage: (message: string) => void;
 }
+
+const SUGGESTIONS = [
+  "A login page with email and password",
+  "A dashboard with analytics cards",
+  "A pricing table with three tiers",
+];
 
 const ChatPanel = ({
   messages,
@@ -30,80 +36,91 @@ const ChatPanel = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
-      {/* Header */}
-      <div className="px-5 py-4 border-b border-gray-200 bg-white">
-        <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-          <Bot size={18} className="text-teal-600" />
-          AI UI Builder
-        </h2>
-        <p className="text-xs text-gray-500 mt-0.5">
-          Describe the UI you want to build
-        </p>
-      </div>
+    <div className="flex flex-col h-full">
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-5 py-5">
         {messages.length === 0 && (
-          <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-            <div className="text-center space-y-2">
-              <Bot size={32} className="mx-auto text-gray-300" />
-              <p>Start by describing a UI you'd like to build.</p>
-              <p className="text-xs text-gray-300">
-                e.g. "A login page with email and password inputs"
-              </p>
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center max-w-[300px] space-y-5">
+              <div className="space-y-2">
+                <h3 className="text-[17px] font-medium text-[#2D2B26] tracking-[-0.02em]">
+                  What would you like to build?
+                </h3>
+                <p className="text-[13px] text-[#8C8780] leading-relaxed">
+                  Describe a UI component and I'll generate it using
+                  the component library.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                {SUGGESTIONS.map((s, i) => (
+                  <button
+                    key={i}
+                    onClick={() => onSendMessage(s)}
+                    className="group flex items-center justify-between text-left px-3.5 py-2.5 rounded-xl text-[13px] text-[#5C5850] border border-[#E0DAD0] bg-[#FFFFF8] hover:bg-[#F5F0E8] hover:border-[#D5D0C8] transition-colors duration-150 cursor-pointer"
+                  >
+                    <span>{s}</span>
+                    <ArrowUpRight size={13} className="text-[#D5D0C8] group-hover:text-[#B5AFA5] transition-colors shrink-0 ml-3" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            {msg.role !== "user" && (
-              <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Bot size={14} className="text-teal-600" />
+        {messages.length > 0 && (
+          <div className="space-y-4">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              >
+                {msg.role !== "user" && (
+                  <div className="w-6 h-6 rounded-full bg-[#D4A27F] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-[9px] font-bold text-white">AI</span>
+                  </div>
+                )}
+                <div
+                  className={`max-w-[82%] px-3.5 py-2.5 text-[13px] leading-[1.6] ${
+                    msg.role === "user"
+                      ? "bg-[#EDE7DF] text-[#2D2B26] rounded-2xl rounded-br-md"
+                      : msg.role === "system"
+                        ? "bg-amber-50/80 text-amber-900 border border-amber-200/60 rounded-xl text-[12px]"
+                        : "bg-[#FFFFF8] text-[#3D3B35] rounded-2xl rounded-bl-md border border-[#E8E3DB]"
+                  }`}
+                >
+                  {msg.content}
+                </div>
+                {msg.role === "user" && (
+                  <div className="w-6 h-6 rounded-full bg-[#5C5850] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <User size={11} className="text-white" />
+                  </div>
+                )}
               </div>
-            )}
-            <div
-              className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
-                msg.role === "user"
-                  ? "bg-teal-600 text-white rounded-tr-md"
-                  : msg.role === "system"
-                    ? "bg-amber-50 text-amber-800 border border-amber-200"
-                    : "bg-white text-gray-700 border border-gray-200 rounded-tl-md"
-              }`}
-            >
-              {msg.content}
-            </div>
-            {msg.role === "user" && (
-              <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <User size={14} className="text-gray-600" />
-              </div>
-            )}
-          </div>
-        ))}
+            ))}
 
-        {isLoading && (
-          <div className="flex gap-2.5 justify-start">
-            <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
-              <Bot size={14} className="text-teal-600" />
-            </div>
-            <div className="bg-white text-gray-500 border border-gray-200 px-4 py-3 rounded-2xl rounded-tl-md text-sm flex items-center gap-2">
-              <Loader2 size={14} className="animate-spin text-teal-500" />
-              Thinking about layout...
-            </div>
+            {isLoading && (
+              <div className="flex gap-2.5 justify-start">
+                <div className="w-6 h-6 rounded-full bg-[#D4A27F] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[9px] font-bold text-white">AI</span>
+                </div>
+                <div className="bg-[#FFFFF8] border border-[#E8E3DB] text-[#8C8780] px-4 py-3 rounded-2xl rounded-bl-md text-[13px] flex items-center gap-1.5">
+                  <span className="inline-block w-1 h-1 rounded-full bg-[#D4A27F]" style={{ animation: "dotPulse 1.4s ease-in-out 0s infinite" }} />
+                  <span className="inline-block w-1 h-1 rounded-full bg-[#D4A27F]" style={{ animation: "dotPulse 1.4s ease-in-out 0.2s infinite" }} />
+                  <span className="inline-block w-1 h-1 rounded-full bg-[#D4A27F]" style={{ animation: "dotPulse 1.4s ease-in-out 0.4s infinite" }} />
+                </div>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
       <form
         onSubmit={handleSubmit}
-        className="px-4 py-3 border-t border-gray-200 bg-white"
+        className="px-4 py-3 border-t border-[#E8E3DB]"
       >
         <div className="flex items-center gap-2">
           <input
@@ -111,16 +128,16 @@ const ChatPanel = ({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Describe a UI or ask for changes..."
+            placeholder="Describe a UI..."
             disabled={isLoading}
-            className="flex-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all disabled:opacity-50"
+            className="flex-1 px-3.5 py-2 bg-[#F0ECE4] border border-transparent rounded-xl text-[13px] text-[#2D2B26] placeholder-[#B5AFA5] focus:outline-none focus:bg-[#FFFFF8] focus:border-[#D5D0C8] focus:ring-1 focus:ring-[#D4A27F]/20 transition-all disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="p-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="w-9 h-9 flex items-center justify-center bg-[#D4A27F] text-white rounded-xl hover:bg-[#C4926F] active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
           >
-            <Send size={16} />
+            <Send size={14} />
           </button>
         </div>
       </form>

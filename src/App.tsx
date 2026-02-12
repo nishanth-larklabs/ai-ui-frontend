@@ -32,7 +32,6 @@ function App() {
 
   const handleSendMessage = useCallback(
     async (content: string) => {
-      // Add user message
       const userMsg: ChatMessage = {
         id: crypto.randomUUID(),
         role: "user",
@@ -49,7 +48,6 @@ function App() {
           currentBlueprint: currentVersion?.blueprint || null,
         });
 
-        // Create new version
         const newVersion: CodeVersion = {
           id: crypto.randomUUID(),
           code: response.code,
@@ -59,18 +57,12 @@ function App() {
           timestamp: Date.now(),
         };
 
-        setVersions((prev) => {
-          const updated = [...prev, newVersion];
-          return updated;
-        });
+        setVersions((prev) => [...prev, newVersion]);
         setCurrentVersionIndex((prev) => {
-          // It's the versions.length value before the update
-          const newIdx =
-            prev >= 0 ? versions.length : 0;
+          const newIdx = prev >= 0 ? versions.length : 0;
           return newIdx;
         });
 
-        // Add assistant response
         const assistantMsg: ChatMessage = {
           id: crypto.randomUUID(),
           role: "assistant",
@@ -79,7 +71,6 @@ function App() {
         };
         setMessages((prev) => [...prev, assistantMsg]);
 
-        // Show violations as system message if any
         if (response.violations.length > 0) {
           const violationMsg: ChatMessage = {
             id: crypto.randomUUID(),
@@ -107,7 +98,6 @@ function App() {
   const handleRollback = useCallback(
     (index: number) => {
       setCurrentVersionIndex(index);
-
       const version = versions[index];
       const rollbackMsg: ChatMessage = {
         id: crypto.randomUUID(),
@@ -127,27 +117,31 @@ function App() {
   }, [setMessages, setVersions, setCurrentVersionIndex]);
 
   return (
-    <div className="h-screen w-screen flex bg-gray-100 overflow-hidden">
-      {/* Left Panel — Chat + Version History */}
-      <div className="w-[380px] min-w-[320px] flex flex-col border-r border-gray-200 bg-white">
-        <div className="flex-1 overflow-hidden">
-          <ChatPanel
-            messages={messages}
-            isLoading={isLoading}
-            onSendMessage={handleSendMessage}
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[#FAF9F6]">
+
+      {/* ── Workspace ── */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left */}
+        <div className="w-[420px] min-w-[360px] flex flex-col border-r border-[#E8E3DB] bg-[#FFFFF8]">
+          <div className="flex-1 overflow-hidden">
+            <ChatPanel
+              messages={messages}
+              isLoading={isLoading}
+              onSendMessage={handleSendMessage}
+            />
+          </div>
+          <VersionHistory
+            versions={versions}
+            currentIndex={currentVersionIndex}
+            onRollback={handleRollback}
+            onClear={handleClearHistory}
           />
         </div>
-        <VersionHistory
-          versions={versions}
-          currentIndex={currentVersionIndex}
-          onRollback={handleRollback}
-          onClear={handleClearHistory}
-        />
-      </div>
 
-      {/* Right Panel — Preview + Code */}
-      <div className="flex-1 overflow-hidden">
-        <PreviewPanel code={currentVersion?.code || ""} />
+        {/* Right */}
+        <div className="flex-1 overflow-hidden">
+          <PreviewPanel code={currentVersion?.code || ""} />
+        </div>
       </div>
     </div>
   );
