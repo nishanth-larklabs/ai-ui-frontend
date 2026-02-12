@@ -20,7 +20,7 @@ const Input = ({
         type={type}
         placeholder={placeholder}
         defaultValue={value}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors bg-white"
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4A27F]/30 focus:border-[#D4A27F] transition-colors bg-white"
       />
     </div>
   );

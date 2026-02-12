@@ -9,7 +9,7 @@ interface ButtonProps {
 
 const variantClasses: Record<string, string> = {
   primary:
-    "bg-teal-600 text-white hover:bg-teal-700 shadow-sm",
+    "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
   secondary:
     "bg-gray-600 text-white hover:bg-gray-700 shadow-sm",
   danger:
@@ -35,7 +35,7 @@ const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 cursor-pointer ${variantClasses[variant] || variantClasses.primary} ${sizeClasses[size] || sizeClasses.md}`}
+      className={`inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#D4A27F]/40 focus:ring-offset-2 cursor-pointer ${variantClasses[variant] || variantClasses.primary} ${sizeClasses[size] || sizeClasses.md}`}
     >
       {children}
     </button>
