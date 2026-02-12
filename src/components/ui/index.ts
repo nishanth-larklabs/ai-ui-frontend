@@ -16,6 +16,7 @@ import Table from "./Table";
 import Card from "./Card";
 import Modal from "./Modal";
 import Chart from "./Chart";
+import { HStack, VStack, Spacer } from "./Stack";
 
 // Re-export all components
 export {
@@ -29,6 +30,9 @@ export {
   Card,
   Modal,
   Chart,
+  HStack,
+  VStack,
+  Spacer,
 };
 
 // Registry: name → React component (used by react-live scope)
@@ -43,4 +47,7 @@ export const ComponentRegistry: Record<string, React.ComponentType<any>> = {
   Card,
   Modal,
   Chart,
+  HStack,
+  VStack,
+  Spacer,
 };

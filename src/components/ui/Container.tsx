@@ -4,6 +4,7 @@ interface ContainerProps {
   maxWidth?: "sm" | "md" | "lg" | "xl" | "full";
   padding?: "none" | "sm" | "md" | "lg";
   children?: React.ReactNode;
+  grow?: boolean;
 }
 
 const maxWidthMap: Record<string, string> = {
@@ -25,10 +26,11 @@ const Container = ({
   maxWidth = "lg",
   padding = "md",
   children,
-}: ContainerProps) => {
+  grow = false,
+}: ContainerProps & { grow?: boolean }) => {
   return (
     <div
-      className={`mx-auto w-full ${maxWidthMap[maxWidth] || "max-w-5xl"} ${paddingMap[padding] || "p-6"}`}
+      className={`mx-auto w-full ${maxWidthMap[maxWidth] || "max-w-5xl"} ${paddingMap[padding] || "p-6"} ${grow ? "flex-1" : ""}`}
     >
       {children}
     </div>
